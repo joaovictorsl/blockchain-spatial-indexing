@@ -32,6 +32,26 @@ def get_pixel_bounds(coordinates):
     }
 
 
+def wait_for_pending_transactions(w3, account_address, max_wait=60):
+    """
+    Wait for any pending transactions to be mined before proceeding.
+    """
+    start_time = time.time()
+    while True:
+        pending_count = w3.eth.get_transaction_count(account_address, 'pending')
+        confirmed_count = w3.eth.get_transaction_count(account_address, 'latest')
+        
+        if pending_count == confirmed_count:
+            return True
+        
+        if time.time() - start_time > max_wait:
+            logger.warning(f"Timeout waiting for pending transactions. Pending: {pending_count}, Confirmed: {confirmed_count}")
+            return False
+        
+        logger.info(f"Waiting for pending transactions... (Pending: {pending_count}, Confirmed: {confirmed_count})")
+        time.sleep(2)
+
+
 def load_geojson_data():
     logger.info(f"Connecting to blockchain at {WEB3_PROVIDER_URI}")
     
@@ -124,9 +144,13 @@ def load_geojson_data():
             max_lons.append(int(bounds['max_lon'] * 1e6))
         
         try:
-            nonce = w3.eth.get_transaction_count(account.address)
+            wait_for_pending_transactions(w3, account.address)
+            nonce = w3.eth.get_transaction_count(account.address, 'pending')
             
-            logger.info(f"Preparing batch {i//batch_size + 1}: {len(pixel_ids)} pixels")
+            logger.info(f"Preparing batch {i//batch_size + 1}: {len(pixel_ids)} pixels (nonce: {nonce})")
+            
+            base_gas_price = w3.eth.gas_price
+            gas_price = int(base_gas_price * 1.1)
             
             transaction = contract.functions.batchAddPixels(
                 pixel_ids,
@@ -137,8 +161,8 @@ def load_geojson_data():
             ).build_transaction({
                 'from': account.address,
                 'nonce': nonce,
-                'gas': 5000000,  # Higher gas limit for batch operations
-                'gasPrice': w3.eth.gas_price
+                'gas': 5000000,
+                'gasPrice': gas_price
             })
             
             signed_txn = w3.eth.account.sign_transaction(transaction, PRIVATE_KEY)
