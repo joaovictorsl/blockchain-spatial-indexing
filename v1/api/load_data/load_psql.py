@@ -137,7 +137,7 @@ def load_geojson_data():
         
         total_inserted += len(batch_data)
         logger.info(f"Inserted {total_inserted}/{len(features)} rows")
-        logger.info(f"Batch time: {batch_elapsed:.2f}s")
+        logger.info(f"Batch time: {batch_elapsed * 1000:.2f}ms")
     
     insert_time = time.time() - start_time
     
@@ -151,7 +151,7 @@ def load_geojson_data():
     cursor.execute(query)
     conn.commit()
     spatial_index_time = time.time() - index_start_time
-    logger.info(f"Spatial index created successfully in {spatial_index_time:.2f}s")
+    logger.info(f"Spatial index created successfully in {spatial_index_time * 1000:.2f}ms")
     
     grid_index_start_time = time.time()
     index_name = f"idx_{POSTGRES_TABLE}_grid_id"
@@ -162,7 +162,7 @@ def load_geojson_data():
     cursor.execute(query)
     conn.commit()
     grid_index_time = time.time() - grid_index_start_time
-    logger.info(f"Created index on grid_id in {grid_index_time:.2f}s")
+    logger.info(f"Created index on grid_id in {grid_index_time * 1000:.2f}ms")
     
     query = sql.SQL("SELECT COUNT(*) FROM {}").format(sql.Identifier(POSTGRES_TABLE))
     cursor.execute(query)
@@ -174,17 +174,17 @@ def load_geojson_data():
     logger.info("=" * 60)
     logger.info("PERFORMANCE METRICS")
     logger.info("=" * 60)
-    logger.info(f"Total time: {total_time:.2f}s ({total_time/60:.2f} minutes)")
-    logger.info(f"Insert time: {insert_time:.2f}s ({insert_time/60:.2f} minutes)")
-    logger.info(f"Spatial index time: {spatial_index_time:.2f}s")
-    logger.info(f"Grid index time: {grid_index_time:.2f}s")
+    logger.info(f"Total time: {total_time * 1000:.2f}ms ({total_time/60:.2f} minutes)")
+    logger.info(f"Insert time: {insert_time * 1000:.2f}ms ({insert_time/60:.2f} minutes)")
+    logger.info(f"Spatial index time: {spatial_index_time * 1000:.2f}ms")
+    logger.info(f"Grid index time: {grid_index_time * 1000:.2f}ms")
     
     if batch_times:
         avg_batch_time = sum(batch_times) / len(batch_times)
         logger.info(f"Number of batches: {len(batch_times)}")
-        logger.info(f"Average time per batch: {avg_batch_time:.2f}s")
-        logger.info(f"Min batch time: {min(batch_times):.2f}s")
-        logger.info(f"Max batch time: {max(batch_times):.2f}s")
+        logger.info(f"Average time per batch: {avg_batch_time * 1000:.2f}ms")
+        logger.info(f"Min batch time: {min(batch_times) * 1000:.2f}ms")
+        logger.info(f"Max batch time: {max(batch_times) * 1000:.2f}ms")
         logger.info(f"Average rows per second: {total_inserted/insert_time:.2f}")
     
     logger.info("=" * 60)

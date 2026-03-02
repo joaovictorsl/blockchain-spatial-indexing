@@ -186,7 +186,7 @@ def load_geojson_data():
                 current_nonce += 1
                 logger.info(f"Batch inserted successfully. Total: {total_inserted}/{len(features)}")
                 logger.info(f"Gas used: {tx_receipt['gasUsed']}")
-                logger.info(f"Batch time: {batch_elapsed:.2f}s")
+                logger.info(f"Batch time: {batch_elapsed * 1000:.2f}ms")
             else:
                 raise Exception(f"Transaction failed with status {tx_receipt['status']}")
         
@@ -200,14 +200,14 @@ def load_geojson_data():
     logger.info("=" * 60)
     logger.info("PERFORMANCE METRICS")
     logger.info("=" * 60)
-    logger.info(f"Total time: {total_time:.2f}s ({total_time/60:.2f} minutes)")
+    logger.info(f"Total time: {total_time * 1000:.2f}ms ({total_time/60:.2f} minutes)")
     
     if batch_times:
         avg_batch_time = sum(batch_times) / len(batch_times)
         logger.info(f"Number of batches: {len(batch_times)}")
-        logger.info(f"Average time per batch: {avg_batch_time:.2f}s")
-        logger.info(f"Min batch time: {min(batch_times):.2f}s")
-        logger.info(f"Max batch time: {max(batch_times):.2f}s")
+        logger.info(f"Average time per batch: {avg_batch_time * 1000:.2f}ms")
+        logger.info(f"Min batch time: {min(batch_times) * 1000:.2f}ms")
+        logger.info(f"Max batch time: {max(batch_times) * 1000:.2f}ms")
     
     if gas_used_list:
         avg_gas = sum(gas_used_list) / len(gas_used_list)

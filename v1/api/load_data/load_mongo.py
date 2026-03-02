@@ -59,7 +59,7 @@ def load_geojson_data():
     index_start_time = time.time()
     collection.create_index([("geometry", GEOSPHERE)])
     geospatial_index_time = time.time() - index_start_time
-    logger.info(f"Geospatial index created successfully in {geospatial_index_time:.2f}s")
+    logger.info(f"Geospatial index created successfully in {geospatial_index_time * 1000:.2f}ms")
     
     batch_size = 10
     total_inserted = 0
@@ -77,7 +77,7 @@ def load_geojson_data():
         
         total_inserted += len(result.inserted_ids)
         logger.info(f"Inserted {total_inserted}/{len(features)} documents")
-        logger.info(f"Batch time: {batch_elapsed:.2f}s")
+        logger.info(f"Batch time: {batch_elapsed * 1000:.2f}ms")
     
     insert_time = time.time() - start_time
     
@@ -86,7 +86,7 @@ def load_geojson_data():
     grid_index_start_time = time.time()
     collection.create_index([("properties.grid_id", 1)])
     grid_index_time = time.time() - grid_index_start_time
-    logger.info(f"Created index on properties.grid_id in {grid_index_time:.2f}s")
+    logger.info(f"Created index on properties.grid_id in {grid_index_time * 1000:.2f}ms")
     
     total_time = time.time() - start_time + geospatial_index_time
     
@@ -94,17 +94,17 @@ def load_geojson_data():
     logger.info("=" * 60)
     logger.info("PERFORMANCE METRICS")
     logger.info("=" * 60)
-    logger.info(f"Total time: {total_time:.2f}s ({total_time/60:.2f} minutes)")
-    logger.info(f"Insert time: {insert_time:.2f}s ({insert_time/60:.2f} minutes)")
-    logger.info(f"Geospatial index time: {geospatial_index_time:.2f}s")
-    logger.info(f"Grid index time: {grid_index_time:.2f}s")
+    logger.info(f"Total time: {total_time * 1000:.2f}ms ({total_time/60:.2f} minutes)")
+    logger.info(f"Insert time: {insert_time * 1000:.2f}ms ({insert_time/60:.2f} minutes)")
+    logger.info(f"Geospatial index time: {geospatial_index_time * 1000:.2f}ms")
+    logger.info(f"Grid index time: {grid_index_time * 1000:.2f}ms")
     
     if batch_times:
         avg_batch_time = sum(batch_times) / len(batch_times)
         logger.info(f"Number of batches: {len(batch_times)}")
-        logger.info(f"Average time per batch: {avg_batch_time:.2f}s")
-        logger.info(f"Min batch time: {min(batch_times):.2f}s")
-        logger.info(f"Max batch time: {max(batch_times):.2f}s")
+        logger.info(f"Average time per batch: {avg_batch_time * 1000:.2f}ms")
+        logger.info(f"Min batch time: {min(batch_times) * 1000:.2f}ms")
+        logger.info(f"Max batch time: {max(batch_times) * 1000:.2f}ms")
         logger.info(f"Average documents per second: {total_inserted/insert_time:.2f}")
     
     logger.info("=" * 60)
