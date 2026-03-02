@@ -165,7 +165,7 @@ def load_geojson_data():
             ).build_transaction({
                 'from': account.address,
                 'nonce': current_nonce,
-                'gas': 5000000,
+                'gas': 25000000,
                 'gasPrice': gas_price
             })
             
