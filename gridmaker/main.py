@@ -18,11 +18,12 @@ def polygons_to_geojson(polygons: List[Any]) -> Dict[str, Any]:
     features = []
     for i, polygon in enumerate(polygons):
         coords = list(polygon.exterior.coords)
+        grid_id = i + 1
         feature = {
             "type": "Feature",
-            "id": i,
+            "id": grid_id,
             "properties": {
-                "grid_id": i,
+                "grid_id": grid_id,
                 "area": polygon.area,
                 "centroid_lon": polygon.centroid.x,
                 "centroid_lat": polygon.centroid.y

@@ -82,10 +82,10 @@ def load_geojson_data():
     account = w3.eth.account.from_key(PRIVATE_KEY)
     logger.info(f"Using account {account.address}")
     
-    # Check if pixels already exist by trying to get pixel 0
+    # Check if pixels already exist by trying to get pixel 1
     try:
-        pixel_details = contract.functions.getPixelById(0).call()
-        if pixel_details[5]:  # exists field
+        pixel_details = contract.functions.getPixelById(1).call()
+        if pixel_details[0] != 0:  # id field
             logger.info("Pixels already loaded into blockchain. Skipping data load.")
             return
     except Exception:

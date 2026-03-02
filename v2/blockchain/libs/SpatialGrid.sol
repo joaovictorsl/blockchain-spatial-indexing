@@ -8,7 +8,6 @@ library SpatialGrid {
         int256 minLon;
         int256 maxLat;
         int256 maxLon;
-        bool exists;
     }
 
     struct Index {
@@ -41,10 +40,10 @@ library SpatialGrid {
         int256 _maxLat,
         int256 _maxLon
     ) internal {
-        require(!self.pixels[_id].exists, "Pixel ID exists");
+        require(self.pixels[_id].id == 0, "Pixel ID exists");
         require(_minLat < _maxLat && _minLon < _maxLon, "Invalid bounds");
 
-        self.pixels[_id] = Pixel(_id, _minLat, _minLon, _maxLat, _maxLon, true);
+        self.pixels[_id] = Pixel(_id, _minLat, _minLon, _maxLat, _maxLon);
 
         int256 startY = _floorDiv(_minLat, self.gridSize);
         int256 endY = _floorDiv(_maxLat, self.gridSize);
@@ -99,8 +98,7 @@ library SpatialGrid {
     }
 
     function _intersects(Pixel storage _pixel, int256 _lat, int256 _lon) private view returns (bool) {
-        return _pixel.exists && 
-               _lat >= _pixel.minLat && _lat <= _pixel.maxLat &&
+        return _lat >= _pixel.minLat && _lat <= _pixel.maxLat &&
                _lon >= _pixel.minLon && _lon <= _pixel.maxLon;
     }
 
