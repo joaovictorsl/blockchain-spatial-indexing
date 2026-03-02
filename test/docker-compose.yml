@@ -1,0 +1,13 @@
+services:
+  test:
+    build: .
+    container_name: notification_test
+    environment:
+      - API_BASE_URL=http://host.docker.internal:8000
+      - GEOJSON_PATH=/data/city_grid.geojson
+      - WEB3_PROVIDER_URI=https://sepolia.base.org
+    volumes:
+      - ../gridmaker/output/city_grid.geojson:/data/city_grid.geojson:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    network_mode: bridge

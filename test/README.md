@@ -26,6 +26,40 @@ To deactivate the virtual environment when done:
 deactivate
 ```
 
+## Docker Usage (Recommended)
+
+### Build and Run with Docker Compose
+
+```bash
+cd test/
+docker compose up --build
+```
+
+This will:
+- Build the test container
+- Mount the GeoJSON data from `../gridmaker/output/city_grid.geojson`
+- Connect to the API at `http://host.docker.internal:8000`
+- Run the test suite and display results
+
+### Custom Configuration
+
+Edit `docker-compose.yml` to customize:
+- `API_BASE_URL`: Change the API endpoint
+- `WEB3_PROVIDER_URI`: Change the blockchain provider
+- `GEOJSON_PATH`: Use a different grid file
+
+### Run with Custom Environment Variables
+
+```bash
+docker compose run -e API_BASE_URL=http://custom-api:8000 -e WEB3_PROVIDER_URI=https://custom.blockchain.url test
+```
+
+### Build Only
+
+```bash
+docker compose build
+```
+
 ## Usage
 
 ### Basic Usage
