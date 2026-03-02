@@ -119,6 +119,9 @@ def load_geojson_data():
     batch_times = []
     gas_used_list = []
     
+    # Track nonce to ensure proper sequencing
+    current_nonce = None
+    
     for i in range(0, len(features), batch_size):
         batch_start_time = time.time()
         batch = features[i:i + batch_size]
@@ -144,10 +147,11 @@ def load_geojson_data():
             max_lons.append(int(bounds['max_lon'] * 1e6))
         
         try:
-            wait_for_pending_transactions(w3, account.address)
-            nonce = w3.eth.get_transaction_count(account.address, 'pending')
+            if current_nonce is None:
+                wait_for_pending_transactions(w3, account.address)
+                current_nonce = w3.eth.get_transaction_count(account.address, 'latest')
             
-            logger.info(f"Preparing batch {i//batch_size + 1}: {len(pixel_ids)} pixels (nonce: {nonce})")
+            logger.info(f"Preparing batch {i//batch_size + 1}: {len(pixel_ids)} pixels (nonce: {current_nonce})")
             
             base_gas_price = w3.eth.gas_price
             gas_price = int(base_gas_price * 1.1)
@@ -160,7 +164,7 @@ def load_geojson_data():
                 max_lons
             ).build_transaction({
                 'from': account.address,
-                'nonce': nonce,
+                'nonce': current_nonce,
                 'gas': 5000000,
                 'gasPrice': gas_price
             })
@@ -179,6 +183,7 @@ def load_geojson_data():
                 gas_used_list.append(tx_receipt['gasUsed'])
                 
                 total_inserted += len(pixel_ids)
+                current_nonce += 1
                 logger.info(f"Batch inserted successfully. Total: {total_inserted}/{len(features)}")
                 logger.info(f"Gas used: {tx_receipt['gasUsed']}")
                 logger.info(f"Batch time: {batch_elapsed:.2f}s")
