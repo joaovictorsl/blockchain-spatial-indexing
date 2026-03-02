@@ -64,7 +64,7 @@ def load_geojson_data():
     
     # Check if pixels already exist by trying to get pixel 0
     try:
-        pixel_details = contract.functions.getPixelDetails(0).call()
+        pixel_details = contract.functions.getPixelById(0).call()
         if pixel_details[5]:  # exists field
             logger.info("Pixels already loaded into blockchain. Skipping data load.")
             return

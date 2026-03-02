@@ -103,19 +103,6 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "_pixelId",
-				"type": "uint256"
-			}
-		],
-		"name": "removePixel",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
 				"name": "value",
 				"type": "uint256"
 			}
@@ -126,7 +113,18 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
+		"inputs": [
+			{
+				"internalType": "int256",
+				"name": "_precision",
+				"type": "int256"
+			},
+			{
+				"internalType": "int256",
+				"name": "_bucketSize",
+				"type": "int256"
+			}
+		],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
 	},
@@ -225,7 +223,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "getPixelDetails",
+		"name": "getPixelById",
 		"outputs": [
 			{
 				"components": [

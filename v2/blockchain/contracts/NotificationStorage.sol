@@ -71,6 +71,10 @@ contract NotificationStorage {
             spatialIndex.insert(_pixelIds[i], _minLats[i], _minLons[i], _maxLats[i], _maxLons[i]);
         }
     }
+    
+    function getPixelById(uint256 _pixelId) public view returns (SpatialGrid.Pixel memory) {
+        return spatialIndex.getPixel(_pixelId);
+    }
 
     function getNotificationsSince(int256 _lat, int256 _lon, uint256 _since) public view returns (Notification[] memory) {
         uint256[] memory pixelIds = spatialIndex.query(_lat, _lon);
