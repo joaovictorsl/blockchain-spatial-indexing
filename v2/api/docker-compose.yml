@@ -1,0 +1,10 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file: .env
+    volumes:
+      - ../../gridmaker/output/city_grid.geojson:/app/grid/city_grid.geojson:ro
+      - ../blockchain/contract_abi.json:/app/contract_abi.json:ro
+    restart: unless-stopped

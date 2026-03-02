@@ -1,0 +1,271 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "count",
+				"type": "uint256"
+			}
+		],
+		"name": "TooManyNotificationsToReturn",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "int256",
+				"name": "_lat",
+				"type": "int256"
+			},
+			{
+				"internalType": "int256",
+				"name": "_lon",
+				"type": "int256"
+			},
+			{
+				"internalType": "string",
+				"name": "_content",
+				"type": "string"
+			}
+		],
+		"name": "addNotification",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_pixelId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "int256",
+				"name": "_minLat",
+				"type": "int256"
+			},
+			{
+				"internalType": "int256",
+				"name": "_minLon",
+				"type": "int256"
+			},
+			{
+				"internalType": "int256",
+				"name": "_maxLat",
+				"type": "int256"
+			},
+			{
+				"internalType": "int256",
+				"name": "_maxLon",
+				"type": "int256"
+			}
+		],
+		"name": "addPixel",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "_pixelIds",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "int256[]",
+				"name": "_minLats",
+				"type": "int256[]"
+			},
+			{
+				"internalType": "int256[]",
+				"name": "_minLons",
+				"type": "int256[]"
+			},
+			{
+				"internalType": "int256[]",
+				"name": "_maxLats",
+				"type": "int256[]"
+			},
+			{
+				"internalType": "int256[]",
+				"name": "_maxLons",
+				"type": "int256[]"
+			}
+		],
+		"name": "batchAddPixels",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_pixelId",
+				"type": "uint256"
+			}
+		],
+		"name": "removePixel",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "setMaxNotificationsToReturn",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "_id",
+				"type": "uint64"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_since",
+				"type": "uint256"
+			}
+		],
+		"name": "getNotificationsByIdSince",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "content",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct NotificationStorage.Notification[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "int256",
+				"name": "_lat",
+				"type": "int256"
+			},
+			{
+				"internalType": "int256",
+				"name": "_lon",
+				"type": "int256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_since",
+				"type": "uint256"
+			}
+		],
+		"name": "getNotificationsSince",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "content",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct NotificationStorage.Notification[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_pixelId",
+				"type": "uint256"
+			}
+		],
+		"name": "getPixelDetails",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "int256",
+						"name": "minLat",
+						"type": "int256"
+					},
+					{
+						"internalType": "int256",
+						"name": "minLon",
+						"type": "int256"
+					},
+					{
+						"internalType": "int256",
+						"name": "maxLat",
+						"type": "int256"
+					},
+					{
+						"internalType": "int256",
+						"name": "maxLon",
+						"type": "int256"
+					},
+					{
+						"internalType": "bool",
+						"name": "exists",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct SpatialGrid.Pixel",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]

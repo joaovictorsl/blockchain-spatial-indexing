@@ -1,0 +1,10 @@
+.env
+output/
+
+# Remix IDE
+.deps/
+artifacts/
+
+# Python
+__pycache__/
+.venv/
