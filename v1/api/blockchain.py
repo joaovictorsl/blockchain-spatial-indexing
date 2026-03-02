@@ -4,6 +4,7 @@ from web3 import Web3
 from typing import Optional
 import logging
 from storage.models.notification import Notification
+from threading import Lock
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +18,8 @@ class BlockchainClient:
         self.w3: Optional[Web3] = None
         self.contract = None
         self.account = None
+        self.nonce_lock = Lock()
+        self.current_nonce: Optional[int] = None
         
     def connect(self):
         try:
@@ -54,35 +57,44 @@ class BlockchainClient:
         if not self.w3 or not self.contract or not self.account:
             raise Exception("Blockchain client not properly initialized")
         
-        try:
-            nonce = self.w3.eth.get_transaction_count(self.account.address)
-            
-            transaction = self.contract.functions.addNotification(
-                pixel_id,
-                content
-            ).build_transaction({
-                'from': self.account.address,
-                'nonce': nonce,
-                'gas': 2000000,
-                'gasPrice': self.w3.eth.gas_price
-            })
-            
-            signed_txn = self.w3.eth.account.sign_transaction(transaction, self.private_key)
-            tx_hash = self.w3.eth.send_raw_transaction(signed_txn.raw_transaction)
-            
-            logger.info(f"Transaction sent: {tx_hash.hex()}")
-            
-            tx_receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
-            
-            if tx_receipt['status'] == 1:
-                logger.info(f"Notification added successfully for pixel {pixel_id}. Tx: {tx_hash.hex()}")
-                return tx_hash.hex()
-            else:
-                raise Exception(f"Transaction failed with status {tx_receipt['status']}")
+        with self.nonce_lock:
+            try:
+                if self.current_nonce is None:
+                    self.current_nonce = self.w3.eth.get_transaction_count(self.account.address, 'pending')
                 
-        except Exception as e:
-            logger.error(f"Error adding notification to blockchain: {e}")
-            raise
+                nonce = self.current_nonce
+                logger.info(f"Using nonce {nonce} for transaction")
+                
+                transaction = self.contract.functions.addNotification(
+                    pixel_id,
+                    content
+                ).build_transaction({
+                    'from': self.account.address,
+                    'nonce': nonce,
+                    'gas': 2000000,
+                    'gasPrice': self.w3.eth.gas_price
+                })
+                
+                signed_txn = self.w3.eth.account.sign_transaction(transaction, self.private_key)
+                tx_hash = self.w3.eth.send_raw_transaction(signed_txn.raw_transaction)
+                
+                self.current_nonce += 1
+                
+                logger.info(f"Transaction sent: {tx_hash.hex()}")
+                
+                tx_receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
+                
+                if tx_receipt['status'] == 1:
+                    logger.info(f"Notification added successfully for pixel {pixel_id}. Tx: {tx_hash.hex()}")
+                    return tx_hash.hex()
+                else:
+                    self.current_nonce = None
+                    raise Exception(f"Transaction failed with status {tx_receipt['status']}")
+                    
+            except Exception as e:
+                self.current_nonce = None
+                logger.error(f"Error adding notification to blockchain: {e}")
+                raise
     
     def get_notifications(self, pixel_id: int, since: int) -> list[Notification]:
         if not self.w3 or not self.contract:
